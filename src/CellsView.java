@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class View extends JFrame {
+public class CellsView extends JFrame {
 
     private Cell[][] cells;
     private Canvas canvas;
@@ -11,7 +11,7 @@ public class View extends JFrame {
     private JLabel cancerCellsLabel;
     private JLabel healthyCellsLabel;
 
-    public View(Cell[][] cells){
+    public CellsView(Cell[][] cells){
         setSize(new Dimension(1400,1000));
         setVisible(true);
         setLayout(new BorderLayout());

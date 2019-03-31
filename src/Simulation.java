@@ -1,5 +1,3 @@
-import java.io.*;
-import java.util.Calendar;
 import java.util.Random;
 
 public class Simulation {
@@ -12,25 +10,26 @@ public class Simulation {
     static int generation = 0;
     static int n = lines * columns;
     static int i = 0;
-    static View view;
-    static GraphicTest graphicTest;
+    static CellsView cellsView;
+    static GraphicView graphicView;
     static double w = 0.5;
 
     public static void main(String[] args) {
         organism = new Cell[lines][columns];
         createOrganism();
 
-        view = new View(organism);
-        graphicTest = new GraphicTest();
+        cellsView = new CellsView(organism);
+//        graphicView = new GraphicView();
+
         while (!isSaturated) {
             query();
             killCell();
             mutateCell();
             calculateFitness();
 
-            view.updateLabels(0, generation, i, n-i);
+            cellsView.updateLabels(0, generation, i, n-i);
             System.out.println("generation: "+ generation);
-                graphicTest.getCanvas().repaint(generation, i, generation, i);
+//          graphicView.getCanvas().repaint(generation, i, generation, i);
 
             if(i==1000)
             	isSaturated = true;
@@ -58,7 +57,7 @@ public class Simulation {
                 }
             }
         }
-        view.getCanvas().repaint();
+        cellsView.getCanvas().repaint();
     }
 
     public static void createOrganism() {

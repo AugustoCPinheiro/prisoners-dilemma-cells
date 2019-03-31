@@ -1,10 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class GraphicTest extends JFrame {
+public class GraphicView extends JFrame {
 
     private Canvas canvas;
-    public GraphicTest(){
+    public GraphicView(){
         setSize(new Dimension(1800,1000));
         setVisible(true);
         setLayout(new BorderLayout());
