@@ -27,6 +27,8 @@ public class Simulation {
             calculateFitness();
 
             view.updateLabels(0, generation, i, n-i);
+             if(i==1000)
+            	isSaturated = true;
 
             i = 0;
             generation++;
