@@ -13,6 +13,7 @@ public class Simulation {
     static int n = lines * columns;
     static int i = 0;
     static View view;
+    static GraphicTest graphicTest;
     static double w = 0.5;
 
     public static void main(String[] args) {
@@ -20,6 +21,7 @@ public class Simulation {
         createOrganism();
 
         view = new View(organism);
+        graphicTest = new GraphicTest();
         while (!isSaturated) {
             query();
             killCell();
@@ -27,11 +29,19 @@ public class Simulation {
             calculateFitness();
 
             view.updateLabels(0, generation, i, n-i);
-             if(i==1000)
+            System.out.println("generation: "+ generation);
+                graphicTest.getCanvas().repaint(generation, i, generation, i);
+
+            if(i==1000)
             	isSaturated = true;
 
             i = 0;
             generation++;
+            try {
+                Thread.sleep(10);
+            }catch (InterruptedException e){
+
+            }
         }
     }
 
@@ -138,11 +148,11 @@ public class Simulation {
             for (int q = 0; q < columns; q++) {
                 if(organism[j][q].cellType == Cell.HEALTHY_CELL) {
                     organism[j][q].fitness = 1 - w + w*calculatePayoff(j, q);
-                    System.out.println("Fitness da celula saudável #" + c + "é: " + organism[j][q].fitness);
+//                    System.out.print("Fitness da celula saudável #" + c + "é: " + organism[j][q].fitness);
                     c++;
                 }else {
                     organism[j][q].fitness = 1 - w + w*calculatePayoff(j, q);
-                    System.out.println("Fitness da célula cancerígena #" + c + "é: " + organism[j][q].fitness);
+//                    System.out.print("Fitness da célula cancerígena #" + c + "é: " + organism[j][q].fitness);
                     c++;
                 }
             }
