@@ -17,7 +17,7 @@ public class Simulation {
         organism = new Cell[lines][columns];
         createOrganism();
 
-
+        new View(organism);
         while (!isSaturated) {
             query();
             killCell();
