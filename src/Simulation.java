@@ -13,7 +13,7 @@ public class Simulation {
     static int n = lines * columns;
     static int i = 0;
     static View view;
-    static int w;
+    static double w = 0.5;
 
     public static void main(String[] args) {
         organism = new Cell[lines][columns];
