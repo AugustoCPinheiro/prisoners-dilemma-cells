@@ -61,7 +61,9 @@ public class CellsCanvas extends Canvas {
             for (int j = 0; j < cells[0].length; j++) {
                 if (cells[i][j].cellType == Cell.CANCEROUS_CELL) {
                     g2.setColor(Color.RED);
-
+                }else{
+                    g2.setColor(Color.GREEN);
+                }
                     xOffset = cellWidth * j;
                     yOffset = cellHeight * i;
                     g2.fillRect(xOffset, yOffset, cellWidth, cellHeight);
@@ -69,7 +71,7 @@ public class CellsCanvas extends Canvas {
                     g2.drawRect(xOffset, yOffset, cellWidth, cellHeight);
 
                     xOffset += cellWidth;
-                }
+
             }
             xOffset = 0;
             yOffset += cellHeight;
