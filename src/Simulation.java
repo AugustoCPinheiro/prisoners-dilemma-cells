@@ -10,21 +10,24 @@ public class Simulation {
     static int columns = 10;
 
     static Long currentOffset = 0L;
-    static int n = lines*columns;
+    static int n = lines * columns;
     static int i = 0;
+    static View view;
+    static int w;
 
     public static void main(String[] args) {
         organism = new Cell[lines][columns];
         createOrganism();
 
-        new View(organism);
+        view = new View(organism);
         while (!isSaturated) {
             query();
             killCell();
             mutateCell();
+            calculateFitness();
 
             System.out.println("Cancerigenas: " + i);
-            System.out.println("Saudaveis: " + (n-i));
+            System.out.println("Saudaveis: " + (n - i));
             i = 0;
         }
     }
@@ -37,11 +40,12 @@ public class Simulation {
                 if (organism[j][q].cellType == Cell.HEALTHY_CELL) {
                     isSaturated = false;
                 }
-                if(organism[j][q].cellType == Cell.CANCEROUS_CELL){
+                if (organism[j][q].cellType == Cell.CANCEROUS_CELL) {
                     i++;
                 }
             }
         }
+        view.getCanvas().repaint();
     }
 
     public static void createOrganism() {
@@ -124,6 +128,23 @@ public class Simulation {
         return totalPayoff;
     }
 
+    public static void calculateFitness() {
+        int c = 0;
+        for (int j = 0; j < lines; j++) {
+
+            for (int q = 0; q < columns; q++) {
+                if(organism[j][q].cellType == Cell.HEALTHY_CELL) {
+                    organism[j][q].fitness = 1 - w + w*calculatePayoff(j, q);
+                    System.out.println("Fitness da celula saudável #" + c + "é: " + organism[j][q].fitness);
+                    c++;
+                }else {
+                    organism[j][q].fitness = 1 - w + w*calculatePayoff(j, q);
+                    System.out.println("Fitness da célula cancerígena #" + c + "é: " + organism[j][q].fitness);
+                    c++;
+                }
+            }
+        }
+    }
 
 
 }

@@ -6,9 +6,10 @@ public class View extends JFrame {
     private Cell[][] cells;
     private Canvas canvas;
     public View(Cell[][] cells){
-        setSize(new Dimension(1000,1000));
+        setSize(new Dimension(1200,1200));
         setVisible(true);
         setLayout(new BorderLayout());
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.cells = cells;
         setupCanvas();
     }
@@ -17,5 +18,9 @@ public class View extends JFrame {
 
         canvas.setSize(this.getSize());
         add(canvas, BorderLayout.CENTER);
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
     }
 }
