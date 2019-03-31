@@ -9,7 +9,7 @@ public class Simulation {
     static int lines = 100;
     static int columns = 10;
 
-    static Long currentOffset = 0L;
+    static int generation = 0;
     static int n = lines * columns;
     static int i = 0;
     static View view;
@@ -26,9 +26,10 @@ public class Simulation {
             mutateCell();
             calculateFitness();
 
-            System.out.println("Cancerigenas: " + i);
-            System.out.println("Saudaveis: " + (n - i));
+            view.updateLabels(0, generation, i, n-i);
+
             i = 0;
+            generation++;
         }
     }
 

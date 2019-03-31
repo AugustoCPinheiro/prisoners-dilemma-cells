@@ -21,8 +21,8 @@ public class CellsCanvas extends Canvas {
         xOffset = 0;
         yOffset = 0;
 
-        int cellHeight = (int) (screenDimensions.getHeight() - 10) / cells.length;
-        int cellWidth = (int) (screenDimensions.getWidth() - 10) / cells[0].length;
+        int cellHeight = (int) (screenDimensions.getHeight()) / cells.length;
+        int cellWidth = (int) (screenDimensions.getWidth()) / cells[0].length;
 
 
             for (int i = 0; i < cells.length; i++) {
@@ -53,8 +53,8 @@ public class CellsCanvas extends Canvas {
         xOffset = 0;
         yOffset = 0;
 
-        int cellHeight = (int) (screenDimensions.getHeight() - 10) / cells.length;
-        int cellWidth = (int) (screenDimensions.getWidth() - 10) / cells[0].length;
+        int cellHeight = (int) (screenDimensions.getHeight()) / cells.length;
+        int cellWidth = (int) (screenDimensions.getWidth()) / cells[0].length;
 
 
         for (int i = 0; i < cells.length; i++) {
