@@ -6,6 +6,7 @@ public class GraphicCanvas extends Canvas {
     private int margin;
     private int xAxisSize;
     private int yAxisSize;
+    private int valueMargin;
 
     public GraphicCanvas(Dimension dimension, int margin) {
         this.dimension = dimension;
@@ -27,7 +28,7 @@ public class GraphicCanvas extends Canvas {
 
         int space = yAxisSize / 10;
         int start = dimension.height;
-        g2.drawLine(4440, 4440, 4440, 4440);
+
         for (int i = 0; i <= 1000; i++) {
             if (i % 100 == 0) {
                 g2.drawString("" + i, 10, start - margin);
@@ -39,11 +40,12 @@ public class GraphicCanvas extends Canvas {
         space = xAxisSize / 10;
         start = 0;
         for (int i = 0; i <= 10000; i++) {
-            if (i % 1000 == 0) {
-                g2.drawString("" + i, start + margin, dimension.height - 20);
+            if (i % 10000 == 0) {
+                g2.drawString("" + i/10000, start + margin, dimension.height - 20);
                 start += space;
             }
         }
+        valueMargin = xAxisSize/ 40000;
     }
 
     @Override
