@@ -1,4 +1,3 @@
-import java.util.BitSet;
 import java.util.Random;
 
 public class Cell {
@@ -26,10 +25,6 @@ public class Cell {
         }else if(genes[0] && genes[2] && genes[3]){
             cellType = CANCEROUS_CELL;
         }
-
-        }
-
-        private void setCancerous(){
 
         }
 }

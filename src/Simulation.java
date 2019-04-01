@@ -14,6 +14,9 @@ public class Simulation {
     static GraphicView graphicView;
     static double w = 0.5;
 
+    static double fitnessH = Integer.MAX_VALUE;
+    static double fitnessC;
+
     static int payoffH;
     static int payoffC;
 
@@ -29,19 +32,18 @@ public class Simulation {
             killCell();
             calculateFitness();
 
-            cellsView.updateLabels(0, generation, i, n-i);
-            System.out.println("generation: "+ generation);
+            cellsView.updateLabels(fitnessC, fitnessH, generation, i, n - i);
 //            graphicView.getCanvas().repaint(generation / 1000, i, 0, 0);
             graphicView.addPoint(generation, i);
 
-            if(i==1000)
-            	isSaturated = true;
+            if (i == 1000)
+                isSaturated = true;
 
             i = 0;
             generation++;
             try {
-                Thread.sleep(10);
-            }catch (InterruptedException e){
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
 
             }
         }
@@ -84,13 +86,13 @@ public class Simulation {
     }
 
     public static int calculatePayoffH() {
-        payoffH = (payoff[0][0]*(n-i-1) + payoff[0][1]*i)/n-1;
+        payoffH = (payoff[0][0] * (n - i - 1) + payoff[0][1] * i) / n - 1;
         return payoffH;
     }
 
     public static int calculatePayoffC() {
 
-        payoffC = (payoff[1][0]*(n-i) + payoff[1][1]*(i-1))/n-1;
+        payoffC = (payoff[1][0] * (n - i) + payoff[1][1] * (i - 1)) / n - 1;
         return payoffC;
     }
 
@@ -106,7 +108,7 @@ public class Simulation {
             newCell = organism[line][column];
         } while (line == j && column == q);
 
-        if(new Random().nextInt(100) < 10)
+        if (new Random().nextInt(100) < 10)
             newCell.mutate();
 
 
@@ -118,55 +120,63 @@ public class Simulation {
         int totalPayoff = 0;
 
         int x;
-        if(currentCell.cellType == Cell.HEALTHY_CELL)
+        if (currentCell.cellType == Cell.HEALTHY_CELL)
             x = calculatePayoffH();
         else
             x = calculatePayoffC();
 
         if (j - 1 > 0) {
-            totalPayoff += payoff[currentCell.cellType][organism[j - 1][q].cellType]*x;
+            totalPayoff += payoff[currentCell.cellType][organism[j - 1][q].cellType] * x;
         }
 
         if (q - 1 > 0) {
-            totalPayoff += payoff[currentCell.cellType][organism[j][q - 1].cellType]*x;
+            totalPayoff += payoff[currentCell.cellType][organism[j][q - 1].cellType] * x;
         }
 
         if (j - 1 > 0 && q - 1 > 0) {
-            totalPayoff += payoff[currentCell.cellType][organism[j - 1][q - 1].cellType]*x;
+            totalPayoff += payoff[currentCell.cellType][organism[j - 1][q - 1].cellType] * x;
         }
         if (j + 1 < lines) {
-            totalPayoff += payoff[currentCell.cellType][organism[j + 1][q].cellType]*x;
+            totalPayoff += payoff[currentCell.cellType][organism[j + 1][q].cellType] * x;
         }
 
         if (q + 1 < columns) {
-            totalPayoff += payoff[currentCell.cellType][organism[j][q + 1].cellType]*x;
+            totalPayoff += payoff[currentCell.cellType][organism[j][q + 1].cellType] * x;
         }
 
         if (j + 1 < lines && q + 1 < columns) {
-            totalPayoff += payoff[currentCell.cellType][organism[j + 1][q + 1].cellType]*x;
+            totalPayoff += payoff[currentCell.cellType][organism[j + 1][q + 1].cellType] * x;
         }
 
         if (j + 1 < lines && q - 1 > 0) {
-            totalPayoff += payoff[currentCell.cellType][organism[j + 1][q - 1].cellType]*x;
+            totalPayoff += payoff[currentCell.cellType][organism[j + 1][q - 1].cellType] * x;
         }
 
         if (j - 1 > 0 && q + 1 < columns) {
-            totalPayoff += payoff[currentCell.cellType][organism[j - 1][q + 1].cellType]*x;
+            totalPayoff += payoff[currentCell.cellType][organism[j - 1][q + 1].cellType] * x;
         }
         return totalPayoff;
     }
 
     public static void calculateFitness() {
         int c = 0;
+        double fitness = 0;
+        fitnessH = 0;
+        fitnessC = 0;
         for (int j = 0; j < lines; j++) {
 
             for (int q = 0; q < columns; q++) {
-                if(organism[j][q].cellType == Cell.HEALTHY_CELL) {
-                    organism[j][q].fitness = 1 - w + w*calculatePayoff(j, q);
+                if (organism[j][q].cellType == Cell.HEALTHY_CELL) {
+                    fitness = 1 - w + w * calculatePayoff(j, q);
+                    organism[j][q].fitness = fitness;
+                    fitnessH += fitness;
+
 //                    System.out.print("Fitness da celula saudável #" + c + "é: " + organism[j][q].fitness);
                     c++;
-                }else {
-                    organism[j][q].fitness = 1 - w + w*calculatePayoff(j, q);
+                } else {
+                    fitness = 1 - w + w * calculatePayoff(j, q);
+                    organism[j][q].fitness = fitness;
+                    fitnessC += fitness;
 //                    System.out.print("Fitness da célula cancerígena #" + c + "é: " + organism[j][q].fitness);
                     c++;
                 }

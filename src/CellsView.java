@@ -6,10 +6,11 @@ public class CellsView extends JFrame {
     private Cell[][] cells;
     private Canvas canvas;
     private JPanel panel;
-    private JLabel fitnessLabel;
     private JLabel generationLabel;
     private JLabel cancerCellsLabel;
     private JLabel healthyCellsLabel;
+    private JLabel fitnessCLabel;
+    private JLabel fitnessHLabel;
 
     public CellsView(Cell[][] cells){
         setSize(new Dimension(1400,1000));
@@ -33,12 +34,15 @@ public class CellsView extends JFrame {
         panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
         add(panel, BorderLayout.EAST);
 
-        fitnessLabel = new JLabel("Fitness: 0");
+        fitnessCLabel = new JLabel("Fitness C: 0");
+        fitnessHLabel = new JLabel("Fitness H: 0");
+
         generationLabel = new JLabel("Geração: 0");
         cancerCellsLabel = new JLabel("Cancerigenas: 0");
         healthyCellsLabel = new JLabel("Saudaveis: 0");
 
-        panel.add(fitnessLabel);
+        panel.add(fitnessCLabel);
+        panel.add(fitnessHLabel);
         panel.add(generationLabel);
         panel.add(cancerCellsLabel);
         panel.add(healthyCellsLabel);
@@ -48,8 +52,9 @@ public class CellsView extends JFrame {
         return canvas;
     }
 
-    public void updateLabels(double fitness, int generation, int cancerous, int healthy){
-        fitnessLabel.setText("Fitness: "+ fitness);
+    public void updateLabels(double fitnessC, double fitnessH, int generation, int cancerous, int healthy){
+        fitnessCLabel.setText("Fitness C: "+ fitnessC);
+        fitnessHLabel.setText("Fitness H: "+ fitnessH);
         generationLabel.setText("Generation: "+ generation);
         cancerCellsLabel.setText("Cancerigenas: "+ cancerous);
         healthyCellsLabel.setText("Saudaveis: " + healthy);
