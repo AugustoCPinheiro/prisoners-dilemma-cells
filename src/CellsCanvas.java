@@ -64,12 +64,12 @@ public class CellsCanvas extends Canvas {
                 }else{
                     g2.setColor(Color.GREEN);
                 }
-                    xOffset = cellWidth * j;
-                    yOffset = cellHeight * i;
+//                    xOffset = cellWidth * j;
+//                    yOffset = cellHeight * i;
                     g2.fillRect(xOffset, yOffset, cellWidth, cellHeight);
                     g2.setColor(Color.BLACK);
                     g2.drawRect(xOffset, yOffset, cellWidth, cellHeight);
-
+                    g2.drawString(cells[i][j].fitness+"", xOffset+cellWidth/2, yOffset + (cellHeight));
                     xOffset += cellWidth;
 
             }
