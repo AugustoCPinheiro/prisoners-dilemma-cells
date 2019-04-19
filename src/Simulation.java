@@ -28,15 +28,12 @@ public class Simulation {
         graphicView = new GraphicView();
 
         while (!isSaturated) {
-            payoffH = 0;
-            payoffC = 0;
             query();
-            killCell();
             calculateFitness();
+            killCell();
             teste();
 
             cellsView.updateLabels(fitnessC, fitnessH, generation, i, n - i);
-//            graphicView.getCanvas().repaint(generation / 1000, i, 0, 0);
             graphicView.addPoint(generation, i);
 
             if (i == 1000)
@@ -56,7 +53,6 @@ public class Simulation {
         for (int j = 0; j < lines; j++) {
 
             for (int q = 0; q < columns; q++) {
-//                calculatePayoff(j, q);
                 if (organism[j][q].cellType == Cell.HEALTHY_CELL) {
                     isSaturated = false;
                 }
@@ -70,29 +66,28 @@ public class Simulation {
 
     public static void teste(){
         double x = (i*fitnessC)/(i*fitnessC + (n-i)*fitnessH);
-        double y = (n-1)/n;
-//        System.out.println("Pi,i+1 = "+ x + " + " + y);
+        double y = (n-1)/(double)n;
+        System.out.println("Pi,i+1 = "+ x + " + " + y);
 //System.out.println(fitnessH);
         double z = ((n-i)*fitnessH)/(i*fitnessC + (n-i)*fitnessH);
-        double w = i/n;
-//        System.out.println("Pi,i-1 = " + z/w + " + " + w);
-//        System.out.println("Pi,i = " + (1 - (z - x)));
+        double w = i/(double)n;
+        System.out.println("Pi,i-1 = " + z/w + " + " + w);
+        System.out.println("Pi,i = " + (1 - (x - z)));
     }
 
     public static void createOrganism() {
-
         for (int j = 0; j < lines; j++) {
             for (int q = 0; q < columns; q++) {
                 organism[j][q] = new Cell(Cell.HEALTHY_CELL);
             }
         }
-        organism[new Random().nextInt(lines)][new Random().nextInt(columns)] = new Cell(Cell.CANCEROUS_CELL);
-        i++;
     }
 
     public static void killCell() {
         int j = new Random().nextInt(lines);
         int q = new Random().nextInt(columns);
+        double deathH = (n-1)/(double)n;
+        double deathC = i/(double)n;
 
         organism[j][q] = null;
 
@@ -116,6 +111,8 @@ public class Simulation {
         int column;
         int line;
 
+        double birthC = (i*fitnessC)/(i*fitnessC + (n-i)*fitnessH);
+
         do {
             line = new Random().nextInt(lines);
             column = new Random().nextInt(columns);
@@ -129,74 +126,16 @@ public class Simulation {
         organism[j][q] = newCell;
     }
 
-    static double calculatePayoff(int j, int q) {
-        Cell currentCell = organism[j][q];
-       double totalPayoff = 0;
 
-        double x;
-        if (currentCell.cellType == Cell.HEALTHY_CELL)
-            x = calculatePayoffH()*(n-i);
-        else
-            x = calculatePayoffC()*i;
-        totalPayoff = x;
-
-//        if (j - 1 > 0) {
-//            totalPayoff += payoff[currentCell.cellType][organism[j - 1][q].cellType] * x;
-//        }
-//
-//        if (q - 1 > 0) {
-//            totalPayoff += payoff[currentCell.cellType][organism[j][q - 1].cellType] * x;
-//        }
-//
-//        if (j - 1 > 0 && q - 1 > 0) {
-//            totalPayoff += payoff[currentCell.cellType][organism[j - 1][q - 1].cellType] * x;
-//        }
-//        if (j + 1 < lines) {
-//            totalPayoff += payoff[currentCell.cellType][organism[j + 1][q].cellType] * x;
-//        }
-//
-//        if (q + 1 < columns) {
-//            totalPayoff += payoff[currentCell.cellType][organism[j][q + 1].cellType] * x;
-//        }
-//
-//        if (j + 1 < lines && q + 1 < columns) {
-//            totalPayoff += payoff[currentCell.cellType][organism[j + 1][q + 1].cellType] * x;
-//        }
-//
-//        if (j + 1 < lines && q - 1 > 0) {
-//            totalPayoff += payoff[currentCell.cellType][organism[j + 1][q - 1].cellType] * x;
-//        }
-//
-//        if (j - 1 > 0 && q + 1 < columns) {
-//            totalPayoff += payoff[currentCell.cellType][organism[j - 1][q + 1].cellType] * x;
-//        }
-        return totalPayoff;
-    }
 
     public static void calculateFitness() {
-        int c = 0;
-        double fitness = 0;
         fitnessH = 0;
         fitnessC = 0;
-        for (int j = 0; j < lines; j++) {
+        fitnessH = 1 - w + w * calculatePayoffH();
+        fitnessC = 1 - w + w * calculatePayoffC();
 
-            for (int q = 0; q < columns; q++) {
-                if (organism[j][q].cellType == Cell.HEALTHY_CELL) {
-                    fitnessH = 1 - w + w * calculatePayoffH();
-                    organism[j][q].fitness = fitnessH;
-//                    fitnessH += fitness;
-
-//                    System.out.print("Fitness da celula saudÃ¡vel #" + c + "Ã©: " + organism[j][q].fitness);
-                    c++;
-                } else {
-                    fitnessC = 1 - w + w * calculatePayoffC();
-                    organism[j][q].fitness = fitnessC;
-//                    fitnessC += fitness;
-//                    System.out.print("Fitness da cÃ©lula cancerÃ­gena #" + c + "Ã©: " + organism[j][q].fitness);
-                    c++;
-                }
-            }
-        }
+        Cell.fitnessC = fitnessC;
+        Cell.fitnessH = fitnessH;
     }
 
 
