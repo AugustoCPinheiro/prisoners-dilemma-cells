@@ -31,10 +31,6 @@ public class GraphicView extends JFrame {
 
     }
 
-
-//    public Canvas getCanvas() {
-//        return canvas;
-//    }
     public void addPoint(int x, int y){
         data.addElement(new DataPoint(x, y));
     }

@@ -5,6 +5,8 @@ public class Cell {
     static final int HEALTHY_CELL = 0;
     static final int CANCEROUS_CELL = 1;
 
+    static double fitnessC = 0;
+    static double fitnessH = 0;
     boolean[] genes;
     int cellType;
     double fitness;
