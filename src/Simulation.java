@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.Random;
 
 public class Simulation {
@@ -6,6 +7,11 @@ public class Simulation {
     static boolean isSaturated = false;
     static int lines = 100;
     static int columns = 10;
+
+    static final String PLUS_EVENT = "plus";
+    static final String SAME_EVENT = "same";
+    static final String LESS_EVENT = "less";
+
 
     static int generation = 0;
     static int n = lines * columns;
@@ -19,25 +25,30 @@ public class Simulation {
 
     static double payoffH;
     static double payoffC;
+    static Distribution<String> deathDistribution;
+    static Distribution<String> birthDistribution;
+    static HashMap<String, Double> deathMap = new HashMap<>();
+    static HashMap<String, Double> birthMap = new HashMap<>();
 
     public static void main(String[] args) {
         organism = new Cell[lines][columns];
         createOrganism();
-
+        deathDistribution = new Distribution<>(deathMap);
+        birthDistribution = new Distribution<>(birthMap);
         cellsView = new CellsView(organism);
         graphicView = new GraphicView();
 
         while (!isSaturated) {
             query();
             calculateFitness();
-            killCell();
-            teste();
+            computeProbabilities();
+            doSelection();
 
             cellsView.updateLabels(fitnessC, fitnessH, generation, i, n - i);
             graphicView.addPoint(generation, i);
 
-            if (i == 1000)
-                isSaturated = true;
+//            if (i == 1000)
+//                isSaturated = true;
 
             i = 0;
             generation++;
@@ -63,12 +74,51 @@ public class Simulation {
         }
         cellsView.getCanvas().repaint();
     }
-
+    static void doSelection(){
+//        String event = distribution.sample();
+//
+//        switch (event){
+//            case PLUS_EVENT:
+//                killCell(Cell.HEALTHY_CELL);
+//                reproductCell(Cell.CANCEROUS_CELL);
+//                break;
+//            case LESS_EVENT:
+//                killCell(Cell.CANCEROUS_CELL);
+//                reproductCell(Cell.HEALTHY_CELL);
+//                break;
+//            case SAME_EVENT:
+//                if (i>0) {
+//                    killCell(Cell.CANCEROUS_CELL);
+//                    reproductCell(Cell.CANCEROUS_CELL);
+//                }else {
+//                    killCell(Cell.HEALTHY_CELL);
+//                    reproductCell(Cell.HEALTHY_CELL);
+//                }
+//                break;
+//        }
+        String birthEvent = birthDistribution.sample();
+        String deathEvent = deathDistribution.sample();
+        switch (deathEvent){
+            case "C":
+                killCell(Cell.CANCEROUS_CELL);
+                break;
+            case "H":
+                killCell(Cell.HEALTHY_CELL);
+                break;
+        }
+        switch (birthEvent){
+            case "C":
+                reproductCell(Cell.CANCEROUS_CELL);
+                break;
+            case "H":
+                reproductCell(Cell.HEALTHY_CELL);
+                break;
+        }
+    }
     public static void teste(){
         double x = (i*fitnessC)/(i*fitnessC + (n-i)*fitnessH);
         double y = (n-1)/(double)n;
         System.out.println("Pi,i+1 = "+ x + " + " + y);
-//System.out.println(fitnessH);
         double z = ((n-i)*fitnessH)/(i*fitnessC + (n-i)*fitnessH);
         double w = i/(double)n;
         System.out.println("Pi,i-1 = " + z/w + " + " + w);
@@ -83,15 +133,57 @@ public class Simulation {
         }
     }
 
-    public static void killCell() {
-        int j = new Random().nextInt(lines);
-        int q = new Random().nextInt(columns);
-        double deathH = (n-1)/(double)n;
-        double deathC = i/(double)n;
+    public static double calculateBirth(int type){
+        if (type == Cell.CANCEROUS_CELL){
+            return (i*fitnessC)/(i*fitnessC + (n-i)*fitnessH);
+        }
+        return ((n-i)*fitnessH)/(fitnessC+(n-i)*fitnessH);
+    }
 
-        organism[j][q] = null;
+    public static double calculateDeath(int type){
+        if (type == Cell.CANCEROUS_CELL){
+            return i/(double)n;
+        }
+        return (n-i)/(double)n;
+    }
 
-        reproductCell(j, q);
+    static void computeProbabilities(){
+        double deathH = calculateDeath(Cell.HEALTHY_CELL);
+        double deathC = calculateDeath(Cell.CANCEROUS_CELL);
+        double birthC = calculateBirth(Cell.CANCEROUS_CELL);
+        double birthH = calculateBirth(Cell.HEALTHY_CELL);
+
+//        System.out.println("deathH: " + deathH);
+//        System.out.println("deathC: " + deathC);
+//        System.out.println("birthC: " + birthC);
+//        System.out.println("birthH: " + birthH);
+
+
+//        map.put(PLUS_EVENT, deathH * birthC);
+//        map.put(SAME_EVENT, 1 - (deathH*birthC) - (deathC*birthH));
+//        map.put(LESS_EVENT, deathC * birthH);
+
+        deathMap.put("C", deathC);
+        deathMap.put("H", deathH);
+
+        birthMap.put("C", birthC);
+        birthMap.put("H", birthH);
+
+        birthDistribution.updateDistribution(birthMap);
+        deathDistribution.updateDistribution(deathMap);
+    }
+
+    public static void killCell(int type) {
+        for (int j = 0; j < lines; j++) {
+
+            for (int q = 0; q < columns; q++) {
+               if (organism[j][q].cellType == type){
+                   organism[j][q] = null;
+                   return;
+               }
+            }
+        }
+
     }
 
     public static double calculatePayoffH() {
@@ -105,25 +197,33 @@ public class Simulation {
         return payoffC;
     }
 
-    public static void reproductCell(int j, int q) {
+    public static void reproductCell(int type) {
+        Cell cell = null;
+        for (int j = 0; j < lines; j++) {
 
-        Cell newCell;
-        int column;
-        int line;
+            for (int q = 0; q < columns; q++) {
+                if (organism[j][q] != null) {
+                    if (organism[j][q].cellType == type) {
+                        cell = organism[j][q];
+                        break;
+                    }
+                }
+            }
+        }
 
-        double birthC = (i*fitnessC)/(i*fitnessC + (n-i)*fitnessH);
+        if (cell == null){
+            cell = new Cell(Cell.CANCEROUS_CELL);
+        }
+        for (int j = 0; j < lines; j++) {
 
-        do {
-            line = new Random().nextInt(lines);
-            column = new Random().nextInt(columns);
-            newCell = organism[line][column];
-        } while (line == j && column == q);
-
-        if (new Random().nextInt(100) < 10)
-            newCell.mutate();
-
-
-        organism[j][q] = newCell;
+            for (int q = 0; q < columns; q++) {
+                if (organism[j][q] == null){
+                    organism[j][q] = cell;
+                    organism[j][q].mutate();
+                    break;
+                }
+            }
+        }
     }
 
 

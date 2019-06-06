@@ -25,10 +25,14 @@ public class CellsCanvas extends Canvas {
 
             for (int i = 0; i < cells.length; i++) {
                 for (int j = 0; j < cells[0].length; j++) {
-                    if (cells[i][j].cellType == Cell.CANCEROUS_CELL) {
-                        g2.setColor(Color.RED);
-                    } else {
-                        g2.setColor(Color.GREEN);
+                    if (cells[i][j] == null){
+                        g2.setColor(Color.BLACK);
+                    }else {
+                        if (cells[i][j].cellType == Cell.CANCEROUS_CELL) {
+                            g2.setColor(Color.RED);
+                        } else {
+                            g2.setColor(Color.GREEN);
+                        }
                     }
                     g2.fillRect(xOffset, yOffset, cellWidth, cellHeight);
                     g2.setColor(Color.BLACK);
@@ -57,16 +61,20 @@ public class CellsCanvas extends Canvas {
         double fitness;
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
-                if (cells[i][j].cellType == Cell.CANCEROUS_CELL) {
-                    g2.setColor(Color.RED);
-                    fitness = Cell.fitnessC;
+                if (cells[i][j] == null){
+                    g2.setColor(Color.BLACK);
+                    fitness = 0;
+                }else {
+                    if (cells[i][j].cellType == Cell.CANCEROUS_CELL) {
+                        g2.setColor(Color.RED);
+                        fitness = Cell.fitnessC;
 
-                }else{
-                    g2.setColor(Color.GREEN);
-                    fitness = Cell.fitnessH;
+                    } else {
+                        g2.setColor(Color.GREEN);
+                        fitness = Cell.fitnessH;
 
+                    }
                 }
-
                     g2.fillRect(xOffset, yOffset, cellWidth, cellHeight);
                     g2.setColor(Color.BLACK);
                     g2.drawRect(xOffset, yOffset, cellWidth, cellHeight);
